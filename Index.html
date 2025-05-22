@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Mandeep</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #fff0f5;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .touch-me {
+            position: absolute;
+            background: #ff6b8b;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 107, 139, 0.4);
+            animation: pulse 1.5s infinite;
+            z-index: 10;
+            user-select: none;
+            transform: scale(0);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .touch-me.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .message {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 85%;
+            max-width: 400px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 5;
+        }
+
+        .message.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        h1 {
+            color: #e74c3c;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .flowers {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .flower {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #ff6b8b;
+            border-radius: 50%;
+            bottom: -50px;
+            opacity: 0;
+        }
+
+        .stem {
+            position: absolute;
+            width: 3px;
+            height: 60px;
+            background: #2ecc71;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .love-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: #ff6b8b;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 20;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            text-align: center;
+        }
+
+        .love-message.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .heart {
+            font-size: 28px;
+            display: inline-block;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Touch me buttons will appear here dynamically -->
+        
+        <div class="message" id="message">
+            <h1>Hey Mandeep Baby</h1>
+            <p>Sorry I didn't care properly last night. I got too busy with my work.</p>
+            <p>I promise to give you more attention my love ❤️</p>
+        </div>
+
+        <div class="flowers" id="flowers">
+            <!-- Flowers will be added by JavaScript -->
+        </div>
+
+        <div class="love-message" id="loveMessage">
+            I Love You Mandeep! <span class="heart">❤️</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.container');
+            const message = document.getElementById('message');
+            const flowersContainer = document.getElementById('flowers');
+            const loveMessage = document.getElementById('loveMessage');
+            
+            const touchMessages = [
+                "Touch Me!",
+                "Touch Me Mandeep!",
+                "Touch Me Baby!",
+                "Here Mandeep!",
+                "Tap Here Baby!",
+                "Please Touch Me!",
+                "Mandeep Touch Here!",
+                "Touch Me Sweetie!",
+                "Tap Tap Mandeep!",
+                "Touch Me Darling!",
+                "Here My Love!",
+                "Touch Me Again!",
+                "One More Touch!",
+                "Mandeep Baby Touch!",
+                "Keep Touching!",
+                "Almost There!",
+                "Last Few Touches!",
+                "Just A Few More!",
+                "One Last Touch!",
+                "Final Touch Baby!"
+            ];
+            
+            let touchCount = 0;
+            let currentTouch = null;
+            
+            function createTouchButton() {
+                if (touchCount >= touchMessages.length) {
+                    showFinalMessage();
+                    return;
+                }
+                
+                // Remove previous touch button if exists
+                if (currentTouch) {
+                    currentTouch.remove();
+                }
+                
+                // Create new touch button
+                currentTouch = document.createElement('div');
+                currentTouch.className = 'touch-me';
+                currentTouch.textContent = touchMessages[touchCount];
+                
+                // Random position (keeping within view)
+                const x = 10 + Math.random() * 80;
+                const y = 20 + Math.random() * 60;
+                currentTouch.style.left = `${x}%`;
+                currentTouch.style.top = `${y}%`;
+                
+                // Add to container
+                container.appendChild(currentTouch);
+                
+                // Show with animation
+                setTimeout(() => {
+                    currentTouch.classList.add('show');
+                }, 50);
+                
+                // Add click handler
+                currentTouch.addEventListener('click', handleTouch);
+            }
+            
+            function handleTouch() {
+                touchCount++;
+                currentTouch.classList.remove('show');
+                
+                // Remove after animation
+                setTimeout(() => {
+                    currentTouch.remove();
+                    createTouchButton();
+                }, 300);
+            }
+            
+            function showFinalMessage() {
+                // Show apology message
+                message.classList.add('show');
+                
+                // Create flowers
+                createFlowers();
+                
+                // Show love message after delay
+                setTimeout(() => {
+                    loveMessage.classList.add('show');
+                }, 3000);
+            }
+            
+            function createFlowers() {
+                // Create 20 flowers with stems
+                for (let i = 0; i < 20; i++) {
+                    const flower = document.createElement('div');
+                    flower.className = 'flower';
+                    
+                    // Random position along bottom
+                    flower.style.left = `${Math.random() * 100}%`;
+                    
+                    // Random delay for animation
+                    const delay = Math.random() * 2;
+                    flower.style.animation = `growFlower 1s forwards ${delay}s`;
+                    flower.style.opacity = '0';
+                    
+                    // Add stem
+                    const stem = document.createElement('div');
+                    stem.className = 'stem';
+                    flower.appendChild(stem);
+                    
+                    // Add to container
+                    flowersContainer.appendChild(flower);
+                }
+                
+                // Add CSS animation for flower growth
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes growFlower {
+                        0% { transform: scale(0); opacity: 0; bottom: -50px; }
+                        80% { transform: scale(1.2); opacity: 1; bottom: 20px; }
+                        100% { transform: scale(1); opacity: 1; bottom: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Start with first touch button
+            createTouchButton();
+        });
+    </script>
+</body>
+</html>
